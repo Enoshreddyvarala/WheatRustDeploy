@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheat Rust Classifier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f5dc 0%, #e6e6b8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #8B4513;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #A0522D;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .info-section {
+            background-color: #FFF8DC;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: left;
+            border: 1px solid #DAA520;
+        }
+
+        .info-section h2 {
+            color: #8B4513;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info-section p {
+            color: #556B2F;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .classes-section {
+            background-color: #FFF8DC;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border: 1px solid #DAA520;
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .class-item {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #DAA520;
+            width: 100%;
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+
+        .class-item h3 {
+            color: #8B4513;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .class-item .class-description {
+            color: #556B2F;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .suggestions-box {
+            background-color: #FFF8DC;
+            padding: 1.2rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            border: 1px solid #DAA520;
+        }
+
+        .suggestions-box h4 {
+            color: #8B4513;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .suggestions-list {
+            list-style-type: none;
+            padding-left: 0.5rem;
+        }
+
+        .suggestions-list li {
+            color: #556B2F;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .suggestions-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #A0522D;
+            font-size: 1.2rem;
+        }
+
+        .class-item .class-suggestions {
+            color: #8B4513;
+            font-size: 0.95rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #DAA520;
+        }
+
+        .class-item .class-suggestions h4 {
+            color: #8B4513;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .class-item .class-suggestions ul {
+            list-style-type: none;
+            padding-left: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .class-item .class-suggestions li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.2rem;
+            color: #556B2F;
+            line-height: 1.4;
+        }
+
+        .class-item .class-suggestions li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #A0522D;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .file-input {
+            padding: 1rem;
+            border: 2px dashed #8B4513;
+            border-radius: 5px;
+            background-color: #FFF8DC;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background-color: #8B4513;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #A0522D;
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+            background-color: #FFF8DC;
+            border: 1px solid #DAA520;
+        }
+
+        .prediction {
+            color: #8B4513;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .confidence {
+            color: #556B2F;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #DAA520;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B4513, #A0522D);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wheat Yellow Rust Classification</h1>
+        <p class="subtitle">Advanced AI-powered classification system for wheat rust diseases</p>
+        
+        <div class="info-section">
+            <h2>About Wheat Rust</h2>
+            <p>Wheat rust is a fungal disease that can cause significant yield losses in wheat crops. Yellow rust (Puccinia striiformis) is one of the most destructive wheat diseases, capable of reducing yields by up to 50% in severe cases.</p>
+            <p>Early detection and proper classification of rust symptoms are crucial for effective disease management and prevention of widespread crop damage.</p>
+        </div>
+        
+        <form class="upload-form" method="POST" enctype="multipart/form-data">
+            <input class="file-input" type="file" name="image" accept="image/*" required>
+            <button class="submit-btn" type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result-container">
+                <h2 class="prediction">Prediction: {{ prediction }}</h2>
+                {% if confidence %}
+                <div class="confidence">
+                    Confidence: {{ confidence }}%
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: {{ confidence }}%"></div>
+                    </div>
+                </div>
+                {% endif %}
+                <img class="result-image" src="{{ image_path }}" alt="Uploaded Image">
+            </div>
+
+            <div class="class-item">
+                <h3>{{ prediction }} - {% if prediction == 'O' %}Immune{% elif prediction == 'MR' %}Moderately Resistant{% elif prediction == 'MRMS' %}Moderately Resistant to Moderately Susceptible{% elif prediction == 'MS' %}Moderately Susceptible{% elif prediction == 'R' %}Resistant{% elif prediction == 'S' %}Susceptible{% endif %}</h3>
+                <p class="class-description">
+                    {% if prediction == 'O' %}
+                        No visible symptoms or infection
+                    {% elif prediction == 'MR' %}
+                        Limited infection with small pustules
+                    {% elif prediction == 'MRMS' %}
+                        Intermediate level of infection
+                    {% elif prediction == 'MS' %}
+                        Significant infection with medium-sized pustules
+                    {% elif prediction == 'R' %}
+                        Very limited infection with hypersensitive reaction
+                    {% elif prediction == 'S' %}
+                        Severe infection with large pustules
+                    {% endif %}
+                </p>
+                <div class="suggestions-box">
+                    <h4>Recommended Actions:</h4>
+                    <ul class="suggestions-list">
+                        {% for suggestion in suggestions %}
+                        <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
