@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 app = Flask(__name__)
 
-# Ensure the static directory exists
+# Ensure the static directory existsp
 os.makedirs('static', exist_ok=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
